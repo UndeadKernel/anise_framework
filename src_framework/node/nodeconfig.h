@@ -72,6 +72,7 @@ class CNodeConfig
     const SParameterTemplate *getParameter(QString key) const;
     const QList<SGateTemplate> &getInputTemplates() const;
     const QList<SGateTemplate> &getOutputTemplates() const;
+    QMap<QString, SParameterTemplate> parameter_template_map() const;
 };
 
 #endif // NODECONFIG_H

@@ -5,6 +5,13 @@
 //------------------------------------------------------------------------------
 // Constructor and Destructor
 
+
+QMap<QString, CNodeConfig::SParameterTemplate> CNodeConfig::parameter_template_map() const
+{
+    return m_parameter_template_map;
+}
+
+
 CNodeConfig::CNodeConfig()
     : m_name("")
     , m_description("")
