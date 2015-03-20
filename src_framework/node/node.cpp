@@ -225,7 +225,7 @@ void CNode::setProgress(qint8 percentage)
              << "{\"status\":" << "{\"node\":"
              << getConfig().getName() << ", "
              << "\"progress\":" << percentage
-             << "}";
+             << "}" << "}";
     }
 }
 
