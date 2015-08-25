@@ -85,6 +85,7 @@ bool CLeradNode::data(QString gate_name, const CConstDataPointer &data)
 
 void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
 {
+    QString warning,info;
     // Seed the algorithm.
     qsrand(getConfig().getParameter("rseed")->value.toUInt());
 
@@ -96,6 +97,8 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
     qint32 attribute_count = table->colCount();
     if(attribute_count < 2) {
         qWarning() << "LERAD needs at least 2 attributes to create rules.";
+        warning = "LERAD needs at least 2 attributes to create rules.";
+        setLogWarning(warning);
         return;
     }
     m_ruleset->attributeCount(attribute_count);
@@ -120,9 +123,13 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
     }
     m_ruleset->tuplesCount(dataset.size());
     qDebug() << "LERAD:: Dataset size:" << dataset.size();
+    info="LERAD:: Dataset size:"+QVariant(dataset.size()).toString();
+    setLogInfo(info);
 
     if(dataset.size() < 2) {
         qWarning() << "LERAD:: Cannot work with less than two tuples.";
+        warning="LERAD:: Cannot work with less than two tuples.";
+        setLogWarning(warning);
         return;
     }
 
@@ -196,6 +203,8 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
         }
     }
     qDebug() << "LERAD:: Initial Rules:" << m_ruleset->size();
+    info="LERAD:: Initial Rules:" + QVariant(m_ruleset->size()).toString();
+    setLogInfo(info);
 
     // 5- Estimate the support of each rule using the samples.
     QList<CRule> &ruleset = m_ruleset->getRules();
@@ -259,7 +268,8 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
         }
     }
     qDebug() << "LERAD:: Pruned Rules:" << ruleset.size();
-
+    info="LERAD:: Pruned Rules:" + QVariant(ruleset.size()).toString();
+    setLogInfo(info);
     // 7- Calculate exact support for top rules on entire training set
     std::sort(ruleset.begin(), ruleset.end());
     // Reset the cover.
@@ -340,9 +350,11 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
 void CLeradNode::dumpRules(const QList<QString> &header,
                            const QString &filename)
 {
-    QFile file(filename);
+ QFile file(filename);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qWarning() << "LERAD:: Could not write rules to" << filename;
+        QString warning="LERAD:: Could not write rules to"+ filename;
+        setLogWarning(warning);
         return;
     }
     QTextStream file_stream(&file);
@@ -380,30 +392,3 @@ void CLeradNode::dumpRules(const QList<QString> &header,
     file_stream.flush();
     file.close();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

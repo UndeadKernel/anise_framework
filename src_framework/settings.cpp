@@ -22,3 +22,8 @@ bool CSettings::progress()
 {
     return CSettings::get("progress").toBool();
 }
+
+bool CSettings::log()
+{
+    return CSettings::get("log").toBool();
+}
