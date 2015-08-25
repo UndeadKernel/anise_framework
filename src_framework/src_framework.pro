@@ -64,7 +64,9 @@ SOURCES += main.cpp \
     data/messagedata.cpp \
     messagehandler.cpp \
     progressinfo.cpp \
+    loginfo.cpp\
     settings.cpp
+
 
 HEADERS += \
     framework.h \
@@ -83,4 +85,5 @@ HEADERS += \
     data/messagedata.h \
     messagehandler.h \
     progressinfo.h \
-    settings.h
+    settings.h \
+    loginfo.h

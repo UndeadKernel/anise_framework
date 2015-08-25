@@ -89,13 +89,18 @@ bool CRuleEvalNode::data(QString gate_name, const CConstDataPointer &data)
 
 void CRuleEvalNode::evaluate()
 {
+    QString info,warning;
     qDebug() << "Starting the evaluation of a ruleset.";
+    info="Starting the evaluation of a ruleset.";
+    setLogInfo(info);
 
     // Do the table attribute number match the rules'?
     if(m_table_data->headerSize() != m_ruleset_data->attributeCount()) {
         qWarning() << "An evaluation cannot be performed against a"
                    << "table and a ruleset that do not match in their"
                    << "attribute count.";
+        warning="An evaluation cannot be performed against a table and a ruleset that do not match in their attribute count.";
+        setLogWarning(warning);                   
         return;
     }
 

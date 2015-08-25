@@ -4,6 +4,8 @@
 #include <dlfcn.h>
 #include <QDebug>
 #include <QRegExp>
+#include "loginfo.h"
+#include <QDateTime>
 
 CNodeFactory *CNodeFactory::m_instance = nullptr;
 
@@ -58,9 +60,20 @@ bool CNodeFactory::configTemplate(QString node_class_name, CNodeConfig &config)
 
 CNode *CNodeFactory::createNode(QString node_class_name, const CNodeConfig &config)
 {
+    CLogInfo log;
+
     if(!m_makers.contains(node_class_name)) {
         qCritical() << "The node" << node_class_name
                  << "could not be created.";
+#ifdef tadasa
+        log.setMsg("The node"+node_class_name+"could not be created.");
+        log.setName("Anise");
+        log.setSrc(CLogInfo::ESource::framework);
+        log.setStatus(CLogInfo::EStatus::error);
+        log.setTime(QDateTime::currentDateTime());
+        log.printMessage();
+ #endif
+
         return nullptr;
     }
 
@@ -93,6 +106,7 @@ QStringList CNodeFactory::availableNodes()
 void CNodeFactory::addLibrary(void *library_handle, QString filename)
 {
     QString name;
+    CLogInfo log;
 
     // Obtain the name of the node.
     QRegExp regexp(".*lib(\\w+)node.so$");
@@ -101,6 +115,16 @@ void CNodeFactory::addLibrary(void *library_handle, QString filename)
     }
     else {
         qWarning() << "Could not load the node file " << filename;
+#ifdef tadasa
+        log.setMsg("Could not load the node file "+filename);
+        log.setName("Anise");
+        log.setSrc(CLogInfo::ESource::framework);
+        log.setStatus(CLogInfo::EStatus::warning);
+        log.setTime(QDateTime::currentDateTime());
+        log.printMessage();
+ #endif
+
+
         return;
     }
 
@@ -109,6 +133,17 @@ void CNodeFactory::addLibrary(void *library_handle, QString filename)
         qWarning() << "The Node Factory already loaded a node called '"
                    << name
                    << "'. Loaded by" << filename;
+#ifdef tadasa
+        log.setMsg("The Node Factory already loaded a node called '"+name+"'. Loaded by"+filename);
+        log.setName("Anise");
+        log.setSrc(CLogInfo::ESource::framework);
+        log.setStatus(CLogInfo::EStatus::warning);
+        log.setTime(QDateTime::currentDateTime());
+        log.printMessage();
+ #endif
+
+
+
         return;
     }
 

@@ -10,6 +10,7 @@
 #include <QMutex>
 #include <QPair>
 #include <QThreadPool>
+#include "../loginfo.h"
 
 
 //------------------------------------------------------------------------------
@@ -152,6 +153,43 @@ void CNode::setProgress(qint8 percentage)
 
         progress.printProgress();
     }
+}
+
+void CNode::setLogInfo(QString info)
+{
+
+//    if(CSettings::log()) {
+        CLogInfo log;
+        log.setSrc(CLogInfo::ESource::node);
+        log.setStatus(CLogInfo::EStatus::info);
+        log.setMsg(info);
+        log.setName(getConfig().getName());
+        log.printMessage();
+  //  }
+}
+
+void CNode::setLogError(QString error)
+{
+   // if(CSettings::log()) {
+        CLogInfo log;
+           log.setSrc(CLogInfo::ESource::node);
+        log.setStatus(CLogInfo::EStatus::error);
+        log.setMsg(error);
+        log.setName(getConfig().getName());
+        log.printMessage();
+    //}
+}
+
+void CNode::setLogWarning(QString warning)
+{
+    //if(CSettings::log()) {
+        CLogInfo log;
+        log.setSrc(CLogInfo::ESource::node);
+        log.setStatus(CLogInfo::EStatus::warning);
+        log.setMsg(warning);
+        log.setName(getConfig().getName());
+        log.printMessage();
+    //}
 }
 
 
