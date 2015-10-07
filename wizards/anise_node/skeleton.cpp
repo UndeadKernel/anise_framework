@@ -41,18 +41,10 @@ bool C%ProjectName:c%Node::start()
     return true;
 }
 
-void C%ProjectName:c%Node::data(QString gate_name, const CConstDataPointer &data)
+bool C%ProjectName:c%Node::data(QString gate_name, const CConstDataPointer &data)
 {
     qDebug() << "Data received.";
 
-    // Process framework messages.
-    if(data->getType() == "message") {
-        auto pmsg = data.staticCast<const CMessageData>();
-        QString msg = pmsg->getMessage();
-        qDebug() << "Received message:" << msg;
-        if(msg == "error") {
-            commitError("out", "Could not get tcp file data.");
-            return;
-        }
-    }
+    // Return true if we processed the data received, return false otherwise.
+    return false;
 }
