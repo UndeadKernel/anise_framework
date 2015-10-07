@@ -10,7 +10,7 @@ class CLogInfo
   public:
 
     enum class ESource {null, node, framework};
-    enum class EStatus {null,info,error,warning};
+    enum class EStatus {null, info, error, warning};
 
     CLogInfo();
 
@@ -29,11 +29,10 @@ class CLogInfo
     void setStatus(EStatus state);
 
     QString msg() const;
-    QString msgString() const;
     void setMsg(QString msg);
 
     QString getSrcName() const;
-    void setName(QString src_name);
+    void setName(QString m_src_name);
 
     QDateTime time() const;
     void setTime(QDateTime time);
@@ -41,10 +40,9 @@ class CLogInfo
   private:
     ESource m_src;
     EStatus m_status;
-    QString src_name;
+    QString m_src_name;
     QString m_msg;
     QDateTime m_time;
-
 };
 
 

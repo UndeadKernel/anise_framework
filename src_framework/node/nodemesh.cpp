@@ -245,13 +245,11 @@ bool CNodeMesh::addNode(QVariantMap &node_json)
         for(QVariant key : param.keys()) {
             ok = conf.setParameter(key.toString(), param.value(key.toString()));
             if(!ok) {
-                qWarning() << "Failed to set the parameter" << key.toString()
-                           << "in Node" << node_name << ".";
-                QString msg = "Failed to set the parameter " + key.toString() + " in Node" + node_name + " .";
+                QString msg = "Failed to set the parameter " + key.toString()
+                    + " in Node " + node_name + " .";
                 log.setMsg(msg);
-                log.setName("Anise");
                 log.setSrc(CLogInfo::ESource::framework);
-                log.setStatus(CLogInfo::EStatus::warning);
+                log.setStatus(CLogInfo::EStatus::error);
                 log.setTime(QDateTime::currentDateTime());
                 log.printMessage();
 

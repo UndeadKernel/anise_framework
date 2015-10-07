@@ -99,7 +99,7 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
     if(attribute_count < 2) {
         warning = "LERAD needs at least 2 attributes to create rules.";
         qWarning() << warning;
-        setLogWarning(warning);
+        logWarning(warning);
         return;
     }
     m_ruleset->attributeCount(attribute_count);
@@ -125,12 +125,12 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
     m_ruleset->tuplesCount(dataset.size());
     info = "LERAD:: Dataset size: " + QVariant(dataset.size()).toString();
     qDebug() << info;
-    setLogInfo(info);
+    logInfo(info);
 
     if(dataset.size() < 2) {
         warning = "LERAD:: Cannot work with less than two tuples.";
         qWarning() << warning;
-        setLogWarning(warning);
+        logWarning(warning);
         return;
     }
 
@@ -205,7 +205,7 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
     }
     info = "LERAD:: Initial Rules: " + QVariant(m_ruleset->size()).toString();
     qDebug() << info;
-    setLogInfo(info);
+    logInfo(info);
 
     // 5- Estimate the support of each rule using the samples.
     QList<CRule> &ruleset = m_ruleset->getRules();
@@ -270,7 +270,7 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
     }
     info = "LERAD:: Pruned Rules: " + QVariant(ruleset.size()).toString();
     qDebug() << info;
-    setLogInfo(info);
+    logInfo(info);
     // 7- Calculate exact support for top rules on entire training set
     std::sort(ruleset.begin(), ruleset.end());
     // Reset the cover.
@@ -355,7 +355,7 @@ void CLeradNode::dumpRules(const QList<QString> &header,
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QString warning = "LERAD:: Could not write rules to " + filename;
         qWarning() << warning;
-        setLogWarning(warning);
+        logWarning(warning);
         return;
     }
     QTextStream file_stream(&file);

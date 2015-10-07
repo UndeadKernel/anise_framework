@@ -1,4 +1,5 @@
 #include "nodeconfig.h"
+#include "../loginfo.h"
 #include <QDebug>
 
 
@@ -40,8 +41,13 @@ bool CNodeConfig::setParameter(QString key, QVariant value) const
 {
     // Key exists?
     if(!m_parameter_template_map.contains(key)) {
-        qWarning() << "The parameter" << key << "has not been defined"
-                   << "in the configuration template.";
+        CLogInfo log;
+        log.setMsg(QString("The parameter %1 has not been defined"
+                "in the configuration template.").arg(key));
+        log.setSrc(CLogInfo::ESource::node);
+        log.setName(m_name);
+        log.setStatus(CLogInfo::EStatus::warning);
+        log.printMessage();
         return false;
     }
 
@@ -55,8 +61,13 @@ bool CNodeConfig::setParameter(QString key, QVariant value) const
             value = value.toInt();
         }
         else {
-            qWarning() << "The value specified for" << key
-                       << "has an incorrect type.";
+            CLogInfo log;
+            log.setMsg(QString("The value specified for %1 has an incorrect type.")
+                .arg(key));
+            log.setSrc(CLogInfo::ESource::node);
+            log.setName(m_name);
+            log.setStatus(CLogInfo::EStatus::warning);
+            log.printMessage();
             return false;
         }
     }
@@ -197,5 +208,3 @@ const QList<CNodeConfig::SGateTemplate> &CNodeConfig::getOutputTemplates() const
 
 //------------------------------------------------------------------------------
 // Private Slots
-
-

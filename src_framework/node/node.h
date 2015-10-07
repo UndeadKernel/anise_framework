@@ -54,9 +54,10 @@ class CNode : public QObject
     // Report progress
     void setProgress(qint8 percentage);
     // Report messages back to the user
-    void setLogInfo(QString info);
-    void setLogError(QString error);
-    void setLogWarning(QString warning);
+    void logInfo(QString info);
+    void logError(QString error);
+    void logWarning(QString warning);
+
   protected:
     // ***************************************************
     // Functions needed to be implemented by any new Node.
@@ -74,6 +75,11 @@ class CNode : public QObject
     // Create a data structure using the data factory obtained when 'init'
     // ... was called.
     CData *createData(QString data_name);
+    template<typename T>
+    QSharedPointer<T> autoCreateData(QString data_name)
+    {
+        return QSharedPointer<T>(static_cast<T *>(createData(data_name)));
+    }
     // Forward a message through a particular gate.
     void commit(QString gate_name, const CConstDataPointer &data);
     // Send an Error message through the specified gate.

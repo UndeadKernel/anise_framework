@@ -118,26 +118,32 @@ void CFramework::main()
     const QStringList args = parser.positionalArguments();
     if(args.size() == 0) {
         // No arguments supplied, this is a usage error at this point.
-        qCritical() << "A mesh argument must be specified.";
         log.setMsg("A mesh argument must be specified.");
-        log.setName("Anise");
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
         log.printMessage();
-        parser.showHelp(1);
+        if(!CSettings::get("machine").toBool()) {
+            qDebug() << endl;
+            parser.showHelp(1);
+        } else {
+            QCoreApplication::exit(1);
+        }
         return;
     }
     if(args.at(0).isEmpty()) {
         // The mesh argument was not supplied.
-        qCritical() << "An invalid mesh has been specified.";
         log.setMsg("An invalid mesh has been specified.");
-        log.setName("Anise");
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
         log.printMessage();
-        parser.showHelp(1);
+        if(!CSettings::get("machine").toBool()) {
+            qDebug() << endl;
+            parser.showHelp(1);
+        } else {
+            QCoreApplication::exit(1);
+        }
         return;
     }
 
@@ -240,21 +246,18 @@ void CFramework::printNodes()
 
 void CFramework::onMeshInit(bool success)
 {
-    CLogInfo log;
-
     CProgressInfo progress;
     progress.setSrc(CProgressInfo::ESource::framework);
     progress.setState(CProgressInfo::EState::init);
 
     if(!success) {
-        progress.setMsg(CProgressInfo::EMsg::error);
-        progress.setInfo("Simulation not started.");
+        progress.setMsg(CProgressInfo::EMsg::stop);
         progress.printProgress();
 
+        CLogInfo log;
         log.setMsg("Simulation not started.");
-        log.setName("Anise");
         log.setSrc(CLogInfo::ESource::framework);
-        log.setStatus(CLogInfo::EStatus::error);
+        log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());
         log.printMessage();
 
@@ -292,12 +295,10 @@ void CFramework::initMesh(QString mesh)
     QFile file(mesh);
     if(!file.open(QFile::ReadOnly | QFile::Text)) {
         // Report an error and exit.
-        progress.setMsg(CProgressInfo::EMsg::error);
-        progress.setInfo(QString("The mesh '%1' could not be opened.").arg(mesh));
+        progress.setMsg(CProgressInfo::EMsg::stop);
         progress.printProgress();
 
         log.setMsg(QString("The mesh '%1' could not be opened.").arg(mesh));
-        log.setName("Anise");
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
@@ -314,14 +315,11 @@ void CFramework::initMesh(QString mesh)
         progress.setMsg(CProgressInfo::EMsg::start);
         progress.printProgress();
         m_mesh.startNodes();
-    }
-    else {
-        progress.setMsg(CProgressInfo::EMsg::warning);
-        progress.setInfo("No simulation was started.");
-        progress.printProgress();
+    } else {
+        // progress.setMsg(CProgressInfo::EMsg::stop);
+        // progress.printProgress();
 
         log.setMsg("No simulation was started.");
-        log.setName("Anise");
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());

@@ -155,7 +155,7 @@ void CNode::setProgress(qint8 percentage)
     }
 }
 
-void CNode::setLogInfo(QString info)
+void CNode::logInfo(QString info)
 {
     CLogInfo log;
     log.setSrc(CLogInfo::ESource::node);
@@ -165,7 +165,7 @@ void CNode::setLogInfo(QString info)
     log.printMessage();
 }
 
-void CNode::setLogError(QString error)
+void CNode::logError(QString error)
 {
     CLogInfo log;
     log.setSrc(CLogInfo::ESource::node);
@@ -175,7 +175,7 @@ void CNode::setLogError(QString error)
     log.printMessage();
 }
 
-void CNode::setLogWarning(QString warning)
+void CNode::logWarning(QString warning)
 {
     CLogInfo log;
     log.setSrc(CLogInfo::ESource::node);
@@ -192,7 +192,7 @@ void CNode::setLogWarning(QString warning)
 CData *CNode::createData(QString data_name)
 {
     if(m_data_factory == nullptr) {
-        qCritical() << "Did you forget to call init() on a Node?";
+        logError("Did you forget to call init() on a Node?");
         return nullptr;
     }
 
@@ -202,8 +202,9 @@ CData *CNode::createData(QString data_name)
 void CNode::commit(QString gate_name, const CConstDataPointer &data)
 {
     if(!m_allow_commit) {
-        qWarning() << "Data can only be commited"
-                   << "inside the 'data' function of a node.";
+        logWarning(QString("%1 %2")
+            .arg("Commit ignored:")
+            .arg("Data can only be commited inside the 'data' function of a node."));
         return;
     }
 
@@ -219,8 +220,9 @@ void CNode::commit(QString gate_name, const CConstDataPointer &data)
 void CNode::commitError(QString gate_name, QString error_msg)
 {
     if(!m_allow_commit) {
-        qWarning() << "Data can only be commited"
-                   << "inside the 'data' function of a node.";
+        logWarning(QString("%1 %2")
+            .arg("Commit ignored:")
+            .arg("Data can only be commited inside the 'data' function of a node."));
         return;
     }
 
@@ -228,7 +230,7 @@ void CNode::commitError(QString gate_name, QString error_msg)
         static_cast<CErrorData *>(CDataFactory::instance().createData("error"));
 
     if(error == nullptr) {
-        qCritical() << "Could not create CErrorData.";
+        logError("Could not create error data.");
         return;
     }
 

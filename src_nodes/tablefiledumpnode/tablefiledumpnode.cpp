@@ -57,19 +57,13 @@ bool CTableFileDumpNode::data(QString gate_name, const CConstDataPointer &data)
 
         // Print the table data into the user-supplied filename.
         if(printTable(table, filename, append)) {
-            info = getConfig().getName() + " dumped table in " + filename;
-            qDebug() << info;
-            setLogInfo(info);
+            logInfo(getConfig().getName() + " stored in " + filename);
         }
         else {
-            warning = getConfig().getName() + " could NOT dump Table in " + filename;
-            qWarning() << warning;
-            setLogWarning(warning);
+            logWarning(getConfig().getName() + " could NOT be stored in " + filename);
         }
-
         return true;
     }
-
     return false;
 }
 
@@ -91,15 +85,17 @@ bool CTableFileDumpNode::printTable(QSharedPointer<const CTableData> &table,
 
     QTextStream out(&file);
 
-    // Print table columns
-    out << table->headerSize() << endl;
-
-    // Print table header.
-    const QList<QString> &header = table->header();
-    for(const QString& attr : header) {
-        out << attr << '\t';
+    // If a table header was defined, print it.
+    if(table->headerSize() != 0) {
+        // Print table columns
+        out << table->headerSize() << endl;
+        // Print table header.
+        const QList<QString> &header = table->header();
+        for(const QString& attr : header) {
+            out << attr << '\t';
+        }
+        out << endl;
     }
-    out << endl;
 
     // Print each row into the file.
     qint32 row_count = table->rowCount();

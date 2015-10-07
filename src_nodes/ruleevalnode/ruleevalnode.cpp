@@ -93,14 +93,14 @@ void CRuleEvalNode::evaluate()
     QString warning;
     info = "Starting the evaluation of a ruleset.";
     qDebug() << info;
-    setLogInfo(info);
+    logInfo(info);
 
     // Do the table attribute number match the rules'?
     if(m_table_data->headerSize() != m_ruleset_data->attributeCount()) {
         warning = "An evaluation cannot be performed against a"
                   "table and a ruleset that do not match in their attribute count.";
         qWarning() << warning;
-        setLogWarning(warning);
+        logWarning(warning);
         return;
     }
 

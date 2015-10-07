@@ -18,24 +18,26 @@ void humanMessageWriterQt4(QtMsgType type, const char *msg)
     switch (type) {
         case QtDebugMsg:
             err << QTime::currentTime().toString("hh:mm:ss.zzz")
-                << BLUE   << "     Info: " << COLOR_RESET
+                << BLUE   << "    Info: " << COLOR_RESET
                 << msg << endl;
             break;
         case QtWarningMsg:
             err << QTime::currentTime().toString("hh:mm:ss.zzz")
-                << YELLOW << "  Warning: " << COLOR_RESET
+                << YELLOW << " Warning: " << COLOR_RESET
                 << msg << endl;
             break;
         case QtCriticalMsg:
             err << QTime::currentTime().toString("hh:mm:ss.zzz")
-                << RED    << " Critical: " << COLOR_RESET
+                << RED    << "   Error: " << COLOR_RESET
                 << msg << endl;
             break;
         case QtFatalMsg:
             err << QTime::currentTime().toString("hh:mm:ss.zzz")
-                << RED    << "    FATAL: " << COLOR_RESET
+                << RED    << "   FATAL: " << COLOR_RESET
                 << msg << endl;
             break;
+        default:
+          err << msg << endl;
     }
 }
 
@@ -57,8 +59,9 @@ void humanMessageWriterQt5(QtMsgType type, const QMessageLogContext &context, co
 
     switch (type) {
         case QtDebugMsg:
-            out << QTime::currentTime().toString("hh:mm:ss.zzz")
-                << BLUE   << "     Info: " << GREEN
+            out << COLOR_RESET
+                << QTime::currentTime().toString("hh:mm:ss.zzz")
+                << BLUE   << "    Info: " << GREEN
                 << function_src << " " << COLOR_RESET;
             // Remove the '@' in messages that start with it.
             if(msg.at(0) == '@') {
@@ -69,24 +72,29 @@ void humanMessageWriterQt5(QtMsgType type, const QMessageLogContext &context, co
             }
             break;
         case QtWarningMsg:
-            err << QTime::currentTime().toString("hh:mm:ss.zzz")
-                << YELLOW << "  Warning: " << GREEN
+            err << COLOR_RESET
+                << QTime::currentTime().toString("hh:mm:ss.zzz")
+                << YELLOW << " Warning: " << GREEN
                 << function_src << " " << COLOR_RESET
                 << msg << endl;
             break;
         case QtCriticalMsg:
-            err << QTime::currentTime().toString("hh:mm:ss.zzz")
-                << RED    << " Critical: " << GREEN
+            err << COLOR_RESET
+                << QTime::currentTime().toString("hh:mm:ss.zzz")
+                << RED    << "   Error: " << GREEN
                 << function_src << " " << COLOR_RESET
                 << msg << endl;
             break;
         case QtFatalMsg:
-            err << QTime::currentTime().toString("hh:mm:ss.zzz")
-                << RED    << "    FATAL: " << GREEN
+            err << COLOR_RESET
+                << QTime::currentTime().toString("hh:mm:ss.zzz")
+                << RED    << "   FATAL: " << GREEN
                 << function_src << " " << COLOR_RESET
                 << msg << endl;
             abort();
             break;
+        default:
+          err << msg << endl;
     }
 }
 

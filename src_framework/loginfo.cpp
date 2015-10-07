@@ -4,14 +4,13 @@
 #include <QJsonObject>
 #include <QDebug>
 #include <QDateTime>
-#define tadasa
 
 CLogInfo::CLogInfo()
     : m_src(ESource::null)
     , m_status(EStatus::null)
+    , m_src_name("")
     , m_msg("")
-    , src_name("")
-    , m_time(QDateTime::currentDateTime())
+    , m_time()
 {
 
 }
@@ -23,46 +22,36 @@ QString CLogInfo::toJsonString()
     QJsonObject log;
 
     // Status
-    QString status = this->statusString();
+    QString status = statusString();
     log.insert(QString("status"), status);
 
     // Source
-    QString src = this->srcString();
+    QString src;
+    if(m_src == ESource::null) {
+        src = "framework";
+    } else {
+        src = srcString();
+    }
     log.insert(QString("source"), src);
 
     // Name
-    QString name = this->getSrcName();
+    QString name = getSrcName();
     log.insert(QString("src_name"), name);
 
-
     // Msg
-
-    QString msg = this->msgString();
-    if(m_msg.isNull()) {
-        msg = QString("");
-    }
-    else {
-        msg = msg;
-    }
-
-    log.insert(QString("msg"), msg);
-
-    // Info
-   // QVariant info;
-   // log.insert(QString("info"), QJsonValue::fromVariant(info));
+    log.insert(QString("msg"), m_msg);
 
     // Time
     QDateTime time;
     if(m_time.isNull()) {
         time = QDateTime::currentDateTime();
-    }
-    else {
+    } else {
         time = m_time;
     }
     log.insert(QString("time"), time.toString());
 
     wrap.insert(QString("log"), log);
-   json_doc.setObject(wrap);
+    json_doc.setObject(wrap);
     QString json_string = json_doc.toJson(QJsonDocument::Compact);
 
     return json_string;
@@ -75,62 +64,35 @@ void CLogInfo::printMessage()
         // For machines.
         qDebug().nospace().noquote()
                 << '@'
-                << this->toJsonString();
-    }
-    else {
-        qDebug().nospace().noquote()
-                << '@'
-                << this->toJsonString();
-
-
+                << toJsonString();
+    } else {
         // For humans.
         QString message("");
 
         // The source
         if(this->src() == ESource::framework) {
-            message.append("Framework");
+            message.append("Framework: ");
         }
         else {
-            message.append("Node").
-                    append(this->getSrcName()).
-                    append("\"");
-        }
-
-        // The state
-        switch(this->status()) {
-        case EStatus::info:
-            message.append(" info");
-            break;
-        case EStatus::error:
-            message.append(" error");
-            break;
-        case EStatus::warning:
-            message.append(" warning");
-            break;
-        default:
-            message.append(" unknown");
+            message.append("Node \"").append(getSrcName()).append("\": ");
         }
 
         // The msg
-        message.append(this->msg());
+        message.append(msg());
 
         // Print the message.
         switch(this->status()) {
-        case EStatus::error:
+          case EStatus::error:
             qCritical().noquote() << message;
             break;
-        case EStatus::warning:
+          case EStatus::warning:
             qWarning().noquote() << message;
             break;
-        default:
+          default:
             qDebug().noquote() << message;
         }
     }
-
-
 }
-
-
 
 CLogInfo::ESource CLogInfo::src() const
 {
@@ -141,14 +103,14 @@ QString CLogInfo::srcString() const
 {
     QString src("");
     switch(m_src) {
-    case ESource::node:
+      case ESource::node:
         src = "node";
         break;
-    case ESource::framework:
+      case ESource::framework:
         src = "framework";
         break;
-    default:
-        src = "";
+      default:
+        src = "unknown";
     }
 
     return src;
@@ -168,18 +130,17 @@ QString CLogInfo::statusString() const
 {
     QString status("");
     switch(m_status) {
-    case EStatus::info:
+      case EStatus::info:
         status = "info";
         break;
-    case EStatus::error:
+      case EStatus::error:
         status = "error";
         break;
-    case EStatus::warning:
+      case EStatus::warning:
         status = "warning";
         break;
-
-    default:
-        status = "";
+      default:
+        status = "unknown";
     }
 
     return status;
@@ -195,19 +156,10 @@ QString CLogInfo::msg() const
     return m_msg;
 }
 
-QString CLogInfo::msgString() const
-{
-
-    QString msg1("");
-    msg1=msg();
-    return msg1;
-}
-
 void CLogInfo::setMsg(QString msg)
 {
     m_msg = msg;
 }
-
 
 QString CLogInfo::getSrcName() const
 {
@@ -217,13 +169,13 @@ QString CLogInfo::getSrcName() const
         return QString("anise");
     }
     else {
-        return src_name;
+        return m_src_name;
     }
 }
 
 void CLogInfo::setName(QString name)
 {
-    src_name = name;
+    m_src_name = name;
 }
 
 void CLogInfo::setTime(QDateTime time)

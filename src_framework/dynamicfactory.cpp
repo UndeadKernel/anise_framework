@@ -1,4 +1,5 @@
 #include "dynamicfactory.h"
+#include "loginfo.h"
 #include <QDir>
 #include <QStringList>
 #include <QDebug>
@@ -35,8 +36,12 @@ void CDynamicFactory::loadLibraries(QString folder, QString filter, int flags)
         // Open the library file.
         void *handle = dlopen(filename.toLocal8Bit().constData(), flags);
         if(handle == NULL) {
-            qCritical() << "There was an error loading the library '"
-                     << (*it) << "'." << dlerror();
+            CLogInfo log;
+            log.setSrc(CLogInfo::ESource::framework);
+            log.setStatus(CLogInfo::EStatus::error);
+            log.setMsg(QString("There was an error loading the library '")
+                + (*it) + "'." + dlerror());
+            log.printMessage();
             continue;
         }
 

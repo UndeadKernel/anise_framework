@@ -51,7 +51,7 @@ bool CTcpDumpNode::data(QString gate_name, const CConstDataPointer &data)
         tcpdump->parse(file->getBytes());
         QString info = "Packets parsed: "+ QVariant(tcpdump->availablePackets()).toString();
         qDebug() << info;
-        setLogInfo(info);
+        logInfo(info);
         tcpdump->unsetNodeReporter();
         setProgress(100);
 

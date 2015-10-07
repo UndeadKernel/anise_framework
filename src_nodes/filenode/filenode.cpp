@@ -24,7 +24,7 @@ void CFileNode::configure(CNodeConfig &config)
     config.addFilename("file", "Input File",
                        "Path of the file to read from disk.");
     config.addBool("binary", "Binary format",
-                   "Parse the file contents as binary data.");
+                   "Parse the file contents as binary data.", true);
 
     // Add inputs and outputs
     config.addOutput("out", "file");
@@ -42,7 +42,7 @@ bool CFileNode::start()
     if(!file.exists()) {
         qCritical() << "File" << filename.toString() << "does not exist.";
         QString error = "File " + filename.toString() + " does not exist.";
-        setLogError(error);
+        logError(error);
         return false;
     }
 
