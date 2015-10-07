@@ -26,6 +26,8 @@ void CLeradNode::configure(CNodeConfig &config)
     config.setDescription("The LERAD Anomaly Detection Algorithm: "
                           "Build rules that describe the normal pattern "
                           "of given data.");
+    //Set the category
+    config.setCategory("Algorithm");
 
     // Add parameters
     //config.addFilename("file", "Input File", "File to be read from disk.");
@@ -96,9 +98,9 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
 
     // Number of attributes
     qint32 attribute_count = table->colCount();
+    qDebug() << "attribute_count" << attribute_count;
     if(attribute_count < 2) {
         warning = "LERAD needs at least 2 attributes to create rules.";
-        qWarning() << warning;
         logWarning(warning);
         return;
     }
@@ -111,9 +113,12 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
     for(qint32 j = 0; j < rows; ++j) {
         // Get the row.
         const QList<QVariant> &row = table->getRow(j);
+        //qDebug()<<"number of rows ::"<<row;
         // Iterate the attributes of the row.
         Antecedent t;
         t.reserve(attribute_count);
+
+        //qDebug() << "DATE TIME DEST_IP DEST_PORT SRC_IP SRC_PORT DUR F1 F2 F3 LEN W1 ... W8";
         for(qint32 i = 0; i < attribute_count; ++i) {
             // Convert attribute to nominal.
             QString attr = row[i].toString();
@@ -123,13 +128,11 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
         dataset.append(t);
     }
     m_ruleset->tuplesCount(dataset.size());
-    info = "LERAD:: Dataset size: " + QVariant(dataset.size()).toString();
-    qDebug() << info;
+    info = "Dataset size: " + QVariant(dataset.size()).toString();
     logInfo(info);
 
     if(dataset.size() < 2) {
-        warning = "LERAD:: Cannot work with less than two tuples.";
-        qWarning() << warning;
+        warning = "Cannot work with less than two tuples.";
         logWarning(warning);
         return;
     }
@@ -203,8 +206,7 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
             }
         }
     }
-    info = "LERAD:: Initial Rules: " + QVariant(m_ruleset->size()).toString();
-    qDebug() << info;
+    info = "Initial Rules: " + QVariant(m_ruleset->size()).toString();
     logInfo(info);
 
     // 5- Estimate the support of each rule using the samples.
@@ -268,8 +270,7 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
             ++it;
         }
     }
-    info = "LERAD:: Pruned Rules: " + QVariant(ruleset.size()).toString();
-    qDebug() << info;
+    info = "Pruned Rules: " + QVariant(ruleset.size()).toString();
     logInfo(info);
     // 7- Calculate exact support for top rules on entire training set
     std::sort(ruleset.begin(), ruleset.end());
@@ -351,10 +352,9 @@ void CLeradNode::lerad(const QSharedPointer<const CTableData> &table)
 void CLeradNode::dumpRules(const QList<QString> &header,
                            const QString &filename)
 {
-    QFile file(filename);
+ QFile file(filename);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QString warning = "LERAD:: Could not write rules to " + filename;
-        qWarning() << warning;
+        QString warning = "Could not write rules to " + filename;
         logWarning(warning);
         return;
     }

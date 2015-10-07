@@ -4,6 +4,7 @@
 #include "node/node.h"
 #include "node/nodeconfig.h"
 #include "datawrapfactory.h"
+#include "tabledata/tabledata.h"
 #include <QObject>
 #include <QString>
 
@@ -19,7 +20,6 @@ class CPythonNode: public CNode
     explicit CPythonNode(const CNodeConfig &config, QObject *parent = 0);
     // Set the configuration template for this Node.
     static void configure(CNodeConfig &config);
-
   protected:
     // Function called when the simulation is started.
     virtual bool start();
@@ -37,4 +37,3 @@ class CPythonNode: public CNode
 };
 
 #endif // PYTHONNODE_H
-

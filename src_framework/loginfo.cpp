@@ -45,7 +45,8 @@ QString CLogInfo::toJsonString()
     QDateTime time;
     if(m_time.isNull()) {
         time = QDateTime::currentDateTime();
-    } else {
+    }
+    else {
         time = m_time;
     }
     log.insert(QString("time"), time.toString());
@@ -65,7 +66,8 @@ void CLogInfo::printMessage()
         qDebug().nospace().noquote()
                 << '@'
                 << toJsonString();
-    } else {
+    }
+    else {
         // For humans.
         QString message("");
 

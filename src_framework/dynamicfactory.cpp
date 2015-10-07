@@ -34,6 +34,7 @@ void CDynamicFactory::loadLibraries(QString folder, QString filter, int flags)
     for(auto it = list.begin(); it != list.end(); ++it) {
         QString filename = dir.filePath(*it);
         // Open the library file.
+        //qDebug() << filename;
         void *handle = dlopen(filename.toLocal8Bit().constData(), flags);
         if(handle == NULL) {
             CLogInfo log;

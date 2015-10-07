@@ -25,6 +25,8 @@ void CRuleEvalNode::configure(CNodeConfig &config)
     // Set a Description of this node.
     config.setDescription("Evaluate a table of attributes against a set "
                           "of rules to score anomalies.");
+    //Set the category
+    config.setCategory("Labels");
 
     // Add parameters
     //config.addFilename("file", "Input File", "File to be read from disk.");
@@ -92,14 +94,12 @@ void CRuleEvalNode::evaluate()
     QString info;
     QString warning;
     info = "Starting the evaluation of a ruleset.";
-    qDebug() << info;
     logInfo(info);
 
     // Do the table attribute number match the rules'?
     if(m_table_data->headerSize() != m_ruleset_data->attributeCount()) {
-        warning = "An evaluation cannot be performed against a"
+        warning = "An evaluation cannot be performed against a "
                   "table and a ruleset that do not match in their attribute count.";
-        qWarning() << warning;
         logWarning(warning);
         return;
     }

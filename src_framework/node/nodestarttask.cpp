@@ -3,7 +3,7 @@
 #include "../loginfo.h"
 #include "../settings.h"
 #include <QDebug>
-
+#define tadasa
 
 //------------------------------------------------------------------------------
 // Constructor and Destructor

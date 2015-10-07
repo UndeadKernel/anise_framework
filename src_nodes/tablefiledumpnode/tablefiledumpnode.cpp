@@ -23,12 +23,17 @@ void CTableFileDumpNode::configure(CNodeConfig &config)
 {
     config.setDescription("Write any received table data to a file.");
 
+    //Set the category
+    config.setCategory("DataDump");
+
     // Add parameters
     config.addFilename("filename", "Output File", "File to be written.");
     config.addBool("append", "Append the table data",
                    "Append the data to the output file instead of replacing it.",
                    false);
-
+    config.addBool("csv_output", "Output the data in CSV file",
+                   "Output the data in CSV file",
+                   false);
     // Add the gates.
     config.addInput("in", "table");
 }
@@ -48,7 +53,8 @@ bool CTableFileDumpNode::data(QString gate_name, const CConstDataPointer &data)
     QString info;
     QString warning;
 
-    if(data->getType() == "table") {
+//qDebug()<<"hello"<<getConfig().getParameter("csv_output")->value.toBool();
+    if(data->getType() == "table" && getConfig().getParameter("csv_output")->value.toBool()==false) {
         auto table = data.staticCast<const CTableData>();
 
         // Get the node properties for the file.
@@ -63,6 +69,18 @@ bool CTableFileDumpNode::data(QString gate_name, const CConstDataPointer &data)
             logWarning(getConfig().getName() + " could NOT be stored in " + filename);
         }
         return true;
+
+    } else if(getConfig().getParameter("csv_output")->value.toBool()){
+        auto table = data.staticCast<const CTableData>();
+        QString filename = getConfig().getParameter("filename")->value.toString();
+        if(dumpIntoFile(table)){
+            info=" dumped table in the csv file "+ filename;
+            setLogInfo(info);
+        }
+        else{
+            warning=" could NOT dump Table in the csv file" + filename;
+            setLogWarning(warning);
+        }
     }
     return false;
 }
@@ -113,5 +131,32 @@ bool CTableFileDumpNode::printTable(QSharedPointer<const CTableData> &table,
         out << endl;
     }
 
+    return true;
+}
+
+bool CTableFileDumpNode::dumpIntoFile(const QSharedPointer<const CTableData> &table) {
+    qint32 attribute_count = table->colCount();
+    qDebug()<< table->colCount();
+    qint32 rows = table->rowCount();
+    qDebug() << "CSV :: "+attribute_count;
+    QString csv_value;
+    //Write to a csv file
+    QString fileName = getConfig().getParameter("filename")->value.toString();
+    QFile file(fileName);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream stream( &file );
+    for(qint32 j = 0; j < rows; ++j)
+    {
+        const QList<QVariant> &row = table->getRow(j);
+        for(qint32 i = 0; i < attribute_count; ++i)
+        {
+          QString value  = row[i].toString()+";";
+          csv_value = csv_value+value;
+        }
+        qDebug()<<csv_value;
+        stream << csv_value<<endl;
+        csv_value="";
+    }
+    file.close();
     return true;
 }

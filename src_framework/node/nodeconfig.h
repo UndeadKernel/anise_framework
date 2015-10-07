@@ -35,6 +35,7 @@ class CNodeConfig
     QString m_name;
     // A description of the node.
     QString m_description;
+    QString m_category;
     // The collection of configuration parameters of the Node.
     // ... They're mutable to allow the user of the Node clases to modify
     // ... the value type of the parameters while disallowing the addition
@@ -50,6 +51,10 @@ class CNodeConfig
     const QString getName() const;
     void setDescription(QString description);
     const QString getDescription() const;
+    //set and get category
+    QString getCategory() const;
+    void setCategory(const QString &value);
+
     // Set the value of parameter specified in the template.
     bool setParameter(QString key, QVariant value) const;
 

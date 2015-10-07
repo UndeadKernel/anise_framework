@@ -23,6 +23,9 @@ void CMawiExtractorNode::configure(CNodeConfig &config)
     config.setDescription("Remove traffic labeled as an anomaly or suspicious "
                           "from TCP dumps.");
 
+    //Set the category
+    config.setCategory("Extractor");
+
     // Add parameters
     config.addBool("anomalous", "Extract Anomalous Flows", "Remove flows labeled as "
                    "anomalous.", true);

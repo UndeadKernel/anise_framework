@@ -43,7 +43,7 @@ void CTcpStreamExtractorNode::configure(CNodeConfig &config)
     config.addUInt("dest_port_filter_to", "Last Valid Destination Port",
                    "Packages targeting a destination port below this "
                    "parameter are accepted", 1024);
-
+    config.setCategory("Extractor");
     // Add the gates.
     config.addInput("in", "tcpdump");
     config.addOutput("out", "tcpstreams");
@@ -124,10 +124,8 @@ bool CTcpStreamExtractorNode::data(QString gate_name,
         }
 
         info = "TCP streams left open: " + QVariant(m_tcp_streams->openStreamsCount()).toString();
-        qDebug() << info;
         logInfo(info);
         info = "TCP streams closed: " + QVariant(m_tcp_streams->closedStreamsCount()).toString();
-        qDebug() << info;
         logInfo(info);
 
         commit("out", m_tcp_streams);
