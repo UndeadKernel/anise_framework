@@ -83,6 +83,20 @@ const QList<QList<QVariant>> &CTableData::table() const
     return m_table;
 }
 
+void CTableData::sort(qint32 field1)
+{
+    // The lambda sort function
+    auto f_less_than = [&] (const QList<QVariant> &r1, const QList<QVariant> &r2)
+    {
+        if(r1.at(field1) < r2.at(field1)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+    std::sort(m_table.begin(), m_table.end(), f_less_than);
+}
+
 void CTableData::sort(qint32 field1, qint32 field2)
 {
     // Lambda sort function.

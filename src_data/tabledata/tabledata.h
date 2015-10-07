@@ -32,6 +32,7 @@ class CTableData: public CData
     virtual CDataPointer clone() const;
     const QList<QList<QVariant>> &table() const;
 
+    void sort(qint32 field1);
     void sort(qint32 field1, qint32 field2);
 };
 
