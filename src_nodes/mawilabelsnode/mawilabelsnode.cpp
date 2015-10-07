@@ -25,6 +25,9 @@ void CMawiLabelsNode::configure(CNodeConfig &config)
     config.setDescription("Parse a file as an XML of labeled anomalies "
                           "from the MAWI dataset.");
 
+    //Set the category
+    config.setCategory("Labels");
+
     // Add parameters
     //config.addFilename("input_file", "XML File", "XML file containing the anomalies.");
 
@@ -166,7 +169,6 @@ bool CMawiLabelsNode::parseMawiXml(const QByteArray &bytes,
     }
     if(xml.hasError()) {
         QString error = "Errors found while parsing MAWI XML labels.";
-        qCritical() << error;
         logError(error);
         // Return stating that there was an error.
         return false;

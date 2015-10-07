@@ -44,6 +44,8 @@ QString CProgressInfo::toJsonString()
     else {
         info = m_info;
     }
+
+
     progress.insert(QString("info"), QJsonValue::fromVariant(info));
 
     wrap.insert(QString("progress"), progress);
@@ -63,6 +65,8 @@ void CProgressInfo::printProgress()
                 << this->toJsonString();
     }
     else {
+
+
         // For humans.
         QString message("");
 

@@ -22,6 +22,9 @@ void CTcpDumpNode::configure(CNodeConfig &config)
 {
     config.setDescription("Parse the contents received into TCP Packets.");
 
+    //Set the category
+    config.setCategory("DataDump");
+
     // Add inputs and outputs
     config.addInput("in", "file");
     config.addOutput("out", "tcpdump");
@@ -50,7 +53,6 @@ bool CTcpDumpNode::data(QString gate_name, const CConstDataPointer &data)
         tcpdump->setNodeReporter(this);
         tcpdump->parse(file->getBytes());
         QString info = "Packets parsed: "+ QVariant(tcpdump->availablePackets()).toString();
-        qDebug() << info;
         logInfo(info);
         tcpdump->unsetNodeReporter();
         setProgress(100);

@@ -63,10 +63,7 @@ CNode *CNodeFactory::createNode(QString node_class_name, const CNodeConfig &conf
     CLogInfo log;
 
     if(!m_makers.contains(node_class_name)) {
-        qCritical() << "The node" << node_class_name
-                 << "could not be created.";
-        log.setMsg("The node"+node_class_name+"could not be created.");
-        log.setName("Anise");
+        log.setMsg("The node " + node_class_name + " could not be created.");
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
@@ -112,9 +109,7 @@ void CNodeFactory::addLibrary(void *library_handle, QString filename)
         name = regexp.cap(1);
     }
     else {
-        qWarning() << "Could not load the node file " << filename;
-        log.setMsg("Could not load the node file "+filename);
-        log.setName("Anise");
+        log.setMsg("Could not load the node file " + filename);
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());
@@ -125,11 +120,8 @@ void CNodeFactory::addLibrary(void *library_handle, QString filename)
 
     // Make sure a node with a similar name has not already been loaded.
     if(m_makers.contains(name)) {
-        qWarning() << "The Node Factory already loaded a node called '"
-                   << name
-                   << "'. Loaded by" << filename;
-        log.setMsg("The Node Factory already loaded a node called '"+name+"'. Loaded by"+filename);
-        log.setName("Anise");
+        log.setMsg("The Node Factory already loaded a node called '" + name +
+                   "'. Loaded by " + filename);
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());

@@ -24,6 +24,9 @@ CTcpStreamFeaturesNode::CTcpStreamFeaturesNode(const CNodeConfig &config, QObjec
 
 void CTcpStreamFeaturesNode::configure(CNodeConfig &config)
 {
+    //Set the category
+    config.setCategory("Extractor");
+
     // Add parameters
     config.addInt("timezone", "GMT time", "The timezone value.", 0);
     config.addBool("timestamp", "Timestamps", "Use timestamps instead of formatted dates.");
@@ -219,8 +222,8 @@ void CTcpStreamFeaturesNode::extractFeatures(const CTcpStream &tcp_stream)
         QString time_string = datetime.toString(QString("MM/dd/yyyy hh:mm:ss"));
         QStringList split_time = time_string.split(" ");
         // Append time.
-        row << split_time.at(0);
-        row << split_time.at(1);
+        row << split_time.at(0);//DATE
+        row << split_time.at(1);//TIME
     }
     else {
         // Use timestamps only.
@@ -229,7 +232,7 @@ void CTcpStreamFeaturesNode::extractFeatures(const CTcpStream &tcp_stream)
 
     // The number of packets in the stream
     bool packet_count = getConfig().getParameter("packet_count")->value.toBool();
-    if(packet_count) {
+    if(packet_count) {        
         row << tcp_stream.total_packets;
     }
 
@@ -294,13 +297,15 @@ void CTcpStreamFeaturesNode::extractFeatures(const CTcpStream &tcp_stream)
 
     // Stream duration (in seconds)
     row << static_cast<qint32>(tcp_stream.finish_time - tcp_stream.start_time);
-
+    //qDebug() << "S"<<tcp_stream.start_time;
+    //qDebug() << "F"<<tcp_stream.finish_time;
     // The first flags, second to last and last flags.
     row << buildFlagsString(tcp_stream.flags_first);
     row << buildFlagsString(tcp_stream.flags_before_last);
     row << buildFlagsString(tcp_stream.flags_last);
 
     // The size of the data.
+    //qDebug()<<"DL" <<tcp_stream.data_length;
     row << tcp_stream.data_length;
 
     // The words to extract from the data stream.

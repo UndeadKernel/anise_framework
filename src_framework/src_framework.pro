@@ -67,6 +67,7 @@ SOURCES += main.cpp \
     loginfo.cpp\
     settings.cpp
 
+
 HEADERS += \
     framework.h \
     node/node.h \

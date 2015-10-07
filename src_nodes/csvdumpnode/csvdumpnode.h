@@ -1,5 +1,5 @@
-#ifndef TABLEFILEDUMPNODE_H
-#define TABLEFILEDUMPNODE_H
+#ifndef CSVDUMPNODE_H
+#define CSVDUMPNODE_H
 
 #include "node/node.h"
 #include "node/nodeconfig.h"
@@ -7,30 +7,28 @@
 #include <QObject>
 #include <QString>
 
-class CTableFileDumpNode: public CNode
+class CCsvdumpNode: public CNode
 {
     Q_OBJECT
 
-  private:
+private:
     // Data Structures
+    QSharedPointer<const CTableData> dump_table;
 
-  public:
+public:
     // Constructor
-    explicit CTableFileDumpNode(const CNodeConfig &config, QObject *parent = 0);
+    explicit CCsvdumpNode(const CNodeConfig &config, QObject *parent = 0);
     // Set the configuration template for this Node.
     static void configure(CNodeConfig &config);
 
-  protected:
+protected:
     // Function called when the simulation is started.
     virtual bool start();
     // Receive data sent by other nodes connected to this node.
     virtual bool data(QString gate_name, const CConstDataPointer &data);
-    // Print the supplied data to a file.
-    bool printTable(QSharedPointer<const CTableData> &table,
-                    QString filename, bool append);
     //Dump Data into a *.csv file
-    bool dumpIntoFile(const QSharedPointer<const CTableData> &table);
+    void dumpIntoFile(const QSharedPointer<const CTableData> &table);
 };
 
-#endif // TABLEFILEDUMPNODE_H
+#endif // CSVDUMPNODE_H
 

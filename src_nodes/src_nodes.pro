@@ -13,3 +13,7 @@ SUBDIRS += \
             mawiextractornode \
             ipfixparsernode \
             entropyfeaturesnode \
+            gmmnode \
+            csvparsernode \
+            csvdumpnode \
+            plotnode

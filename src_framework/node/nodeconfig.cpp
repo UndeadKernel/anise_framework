@@ -37,6 +37,16 @@ const QString CNodeConfig::getDescription() const
     return m_description;
 }
 
+QString CNodeConfig::getCategory() const
+{
+    return m_category;
+}
+
+void CNodeConfig::setCategory(const QString &value)
+{
+    m_category = value;
+}
+
 bool CNodeConfig::setParameter(QString key, QVariant value) const
 {
     // Key exists?

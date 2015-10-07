@@ -6,3 +6,4 @@ SUBDIRS += \
             filedata \
             tcpstreamsdata \
             rulesetdata \
+            csvdumpdata

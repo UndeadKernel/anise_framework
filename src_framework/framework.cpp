@@ -24,6 +24,7 @@
 //------------------------------------------------------------------------------
 // Constructor and Destructor
 
+
 CFramework::CFramework(QObject *parent/*= 0*/)
     : QObject(parent)
     , m_mesh()
@@ -108,7 +109,7 @@ void CFramework::main()
     CNodeFactory::instance().loadLibraries();
 
     if(parser.isSet(nodes_option)) {
-        // Only print the nodes and exit.
+        // Only print, the nodes and exit.
         printNodes();
         QCoreApplication::exit(0);
         return;
@@ -180,6 +181,7 @@ void CFramework::printNodes()
         CNodeFactory::instance().configTemplate(node_classes.at(i), config);
         json_node["class"] = node_classes.at(i);
         json_node["description"] = config.getDescription();
+        json_node["category"] = config.getCategory();
 
         // Print the parameters of the node.
         QJsonArray json_parameters;
@@ -287,7 +289,6 @@ void CFramework::onMeshFinish()
 
 void CFramework::initMesh(QString mesh)
 {
-    CLogInfo log;
     CProgressInfo progress;
     progress.setSrc(CProgressInfo::ESource::framework);
     progress.setState(CProgressInfo::EState::init);
@@ -298,6 +299,7 @@ void CFramework::initMesh(QString mesh)
         progress.setMsg(CProgressInfo::EMsg::stop);
         progress.printProgress();
 
+        CLogInfo log;
         log.setMsg(QString("The mesh '%1' could not be opened.").arg(mesh));
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);

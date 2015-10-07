@@ -33,7 +33,7 @@ CPythonNode::CPythonNode(const CNodeConfig &config, QObject *parent/* = 0*/)
 void CPythonNode::configure(CNodeConfig &config)
 {
     config.setDescription("Run Python scripts as nodes.");
-
+    config.setCategory("Script");
     // Add parameters
     config.addFilename("input_script", "Python Script", "Python script to execute.");
 
@@ -85,8 +85,6 @@ bool CPythonNode::data(QString gate_name, const CConstDataPointer &data)
         QVariant result = module.call("main",
             QVariantList() << QVariant::fromValue(p_table.data())
                            << QVariant::fromValue(result_table.data()));
-
-        // If the python script returned true, commit the results' table.
         if(result.toBool()) {
             commit("out", result_table);
         }
@@ -151,4 +149,3 @@ void CPythonNode::initPython()
 
     python_init = true;
 }
-
