@@ -74,8 +74,8 @@ void CFramework::main()
                                        " status messages.");
     parser.addOption(progress_option);
     // The --dbg_function option
-    QCommandLineOption dbg_function_option("dbg_function",
-        "Show the function that printed a message into the console.");
+    QCommandLineOption dbg_function_option("functions",
+        "Show the functions that printed a message into the console.");
     parser.addOption(dbg_function_option);
 
     QCommandLineOption msglog("msglog",
