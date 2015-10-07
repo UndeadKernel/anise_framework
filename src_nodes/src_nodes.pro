@@ -12,3 +12,4 @@ SUBDIRS += \
             mawilabelsnode \
             mawiextractornode \
             ipfixparsernode \
+            entropyfeaturesnode \
