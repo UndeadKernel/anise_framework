@@ -11,3 +11,4 @@ SUBDIRS += \
             pythonnode \
             mawilabelsnode \
             mawiextractornode \
+            ipfixparsernode \
