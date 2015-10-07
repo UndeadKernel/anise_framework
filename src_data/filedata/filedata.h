@@ -12,6 +12,7 @@ class CFileData: public CData
     bool readFile(QString filename, bool binary);
     bool isDataBinary();
     const QByteArray &getBytes() const;
+    int numBytes() const;
     void setByte(int offset, quint8 byte);
 
   private:

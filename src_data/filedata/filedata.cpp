@@ -64,6 +64,11 @@ const QByteArray &CFileData::getBytes() const
     return m_bytes;
 }
 
+int CFileData::numBytes() const
+{
+    return m_bytes.length();
+}
+
 void CFileData::setByte(int offset, quint8 byte)
 {
     m_bytes[offset] = byte;
