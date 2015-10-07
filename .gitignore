@@ -16,3 +16,6 @@ meshes/
 anids-framework.pro.user*
 
 TAGS
+*GPATH*
+*GRTAGS*
+*GTAGS*
