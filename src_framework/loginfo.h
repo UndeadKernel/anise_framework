@@ -18,7 +18,8 @@ class CLogInfo
     QString toJsonString();
     // Print the json representation of this log if is reporting
     // ... is enabled.
-    void printMessage();
+    # define print() printMessage(__FILE__, __LINE__, Q_FUNC_INFO)
+    void printMessage(const char *file = 0, int line = 0, const char *function = 0);
 
     ESource src() const;
     QString srcString() const;

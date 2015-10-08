@@ -58,7 +58,7 @@ QString CLogInfo::toJsonString()
     return json_string;
 }
 
-void CLogInfo::printMessage()
+void CLogInfo::printMessage(const char *file, int line, const char *function)
 {
     // Is progress reporting for machines or humans enabled?
     if(CSettings::machine()) {
@@ -85,13 +85,13 @@ void CLogInfo::printMessage()
         // Print the message.
         switch(this->status()) {
           case EStatus::error:
-            qCritical().noquote() << message;
+            QMessageLogger(file, line, function).critical().noquote() << message;
             break;
           case EStatus::warning:
-            qWarning().noquote() << message;
+            QMessageLogger(file, line, function).warning().noquote() << message;
             break;
           default:
-            qDebug().noquote() << message;
+            QMessageLogger(file, line, function).debug().noquote() << message;
         }
     }
 }

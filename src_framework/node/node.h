@@ -14,6 +14,7 @@ class CNodeMesh;
 class CNodeGateTask;
 class CNodeStartTask;
 
+
 class CNode : public QObject
 {
   Q_OBJECT
@@ -54,9 +55,15 @@ class CNode : public QObject
     // Report progress
     void setProgress(qint8 percentage);
     // Report messages back to the user
-    void logInfo(QString info);
-    void logError(QString error);
-    void logWarning(QString warning);
+    #define LOG_INFO(msg) logInfo(msg, __FILE__, __LINE__, Q_FUNC_INFO)
+    void logInfo(QString info, const char *file = 0,
+        int line = 0, const char *function = 0);
+    #define LOG_ERROR(msg) logInfo(msg, __FILE__, __LINE__, Q_FUNC_INFO)
+    void logError(QString error, const char *file = 0,
+        int line = 0, const char *function = 0);
+    #define LOG_WARNING(msg) logInfo(msg, __FILE__, __LINE__, Q_FUNC_INFO)
+    void logWarning(QString warning, const char *file = 0,
+        int line = 0, const char *function = 0);
 
   protected:
     // ***************************************************

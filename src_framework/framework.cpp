@@ -123,7 +123,7 @@ void CFramework::main()
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
         if(!CSettings::get("machine").toBool()) {
             qDebug() << endl;
             parser.showHelp(1);
@@ -138,7 +138,7 @@ void CFramework::main()
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
         if(!CSettings::get("machine").toBool()) {
             qDebug() << endl;
             parser.showHelp(1);
@@ -261,7 +261,7 @@ void CFramework::onMeshInit(bool success)
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         QCoreApplication::exit(1);
     }
@@ -304,7 +304,7 @@ void CFramework::initMesh(QString mesh)
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         QCoreApplication::exit(1);
         return;
@@ -325,7 +325,7 @@ void CFramework::initMesh(QString mesh)
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         QCoreApplication::exit(1);
         return;

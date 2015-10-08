@@ -50,33 +50,33 @@ bool CIpfixparserNode::start()
     m_default_template = fbTemplateAlloc(m_info_model);
     success = fbTemplateAppendSpecArray(m_default_template, yaf_flow_spec, 0xffffffff, &error);
     if(!success) {
-        logError("Error building the flows template.");
+        LOG_ERROR("Error building the flows template.");
         return false;
     }
 
     m_stats_template = fbTemplateAlloc(m_info_model);
     success = fbTemplateAppendSpecArray(m_stats_template, yaf_stats_spec, 0xffffffff, &error);
     if(!success) {
-        logError("Error building the statistics template.");
+        LOG_ERROR("Error building the statistics template.");
         return false;
     }
 
     m_session = fbSessionAlloc(m_info_model);
     m_flows_template_id = fbSessionAddTemplate(m_session, true, FB_TID_AUTO, m_default_template, &error);
     if(!m_flows_template_id) {
-        logError("Could not associate flows template with the session.");
+        LOG_ERROR("Could not associate flows template with the session.");
         return false;
     }
     m_stats_template_id = fbSessionAddTemplate(m_session, true, FB_TID_AUTO, m_stats_template, &error);
     if(!m_stats_template_id) {
-        logError("Could not associate stats template with the session.");
+        LOG_ERROR("Could not associate stats template with the session.");
         return false;
     }
 
     m_buf = fBufAllocForCollection(m_session, nullptr);
     success = fBufSetInternalTemplate(m_buf, m_flows_template_id, &error);
     if(!success) {
-        logError("Could not set internal buffer representation.");
+        LOG_ERROR("Could not set internal buffer representation.");
         return false;
     }
 
@@ -134,7 +134,7 @@ bool CIpfixparserNode::data(QString gate_name, const CConstDataPointer &data)
                 if(fbTemplateGetOptionsScope(external_template) != 0) {
                     // Get ready to parse the statistics with the stats template.
                     if(!fBufSetInternalTemplate(m_buf, m_stats_template_id, &error)) {
-                        logError("Could not set the statistics template on buffer.");
+                        LOG_ERROR("Could not set the statistics template on buffer.");
                         commitError("out", "Parsing error.");
                         return true;
                     }
@@ -143,7 +143,7 @@ bool CIpfixparserNode::data(QString gate_name, const CConstDataPointer &data)
                     success = fBufNext(m_buf, (quint8 *)&stats, &len, &error);
                     if(!success) {
                         // Ignore that we couldn't read statistics.
-                        logWarning(QString("Could not read flow statistics: %1").arg(error->message));
+                        LOG_WARNING(QString("Could not read flow statistics: %1").arg(error->message));
                         g_clear_error(&error);
                     } else {
                         // Store the statistics in a table
@@ -169,7 +169,7 @@ bool CIpfixparserNode::data(QString gate_name, const CConstDataPointer &data)
 
                     // Return the template back to the flows.
                     if(!fBufSetInternalTemplate(m_buf, m_flows_template_id, &error)) {
-                        logError("Could not return to the flow template.");
+                        LOG_ERROR("Could not return to the flow template.");
                         commitError("out", "Parsing error.");
                         return true;
                     }
@@ -183,7 +183,7 @@ bool CIpfixparserNode::data(QString gate_name, const CConstDataPointer &data)
                     g_clear_error(&error);
                     break;
                 } else {
-                    logWarning(error->message);
+                    LOG_WARNING(error->message);
                     g_clear_error(&error);
                     continue;
                 }
@@ -200,7 +200,7 @@ bool CIpfixparserNode::data(QString gate_name, const CConstDataPointer &data)
                     g_clear_error(&error);
                     break;
                 } else {
-                    logWarning(QString("Flows error: %1").arg(error->message));
+                    LOG_WARNING(QString("Flows error: %1").arg(error->message));
                     g_clear_error(&error);
                     continue;
                 }
@@ -245,8 +245,8 @@ bool CIpfixparserNode::data(QString gate_name, const CConstDataPointer &data)
             }
         }
 
-        logInfo(QString("Num flows: %1").arg(num_flows));
-        logInfo(QString("Num stats: %1").arg(num_stats));
+        LOG_INFO(QString("Num flows: %1").arg(num_flows));
+        LOG_INFO(QString("Num stats: %1").arg(num_stats));
 
         // Sort the flows by start time (field 0).
         setProgress(99);

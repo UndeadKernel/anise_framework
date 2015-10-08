@@ -155,34 +155,34 @@ void CNode::setProgress(qint8 percentage)
     }
 }
 
-void CNode::logInfo(QString info)
+void CNode::logInfo(QString info, const char *file, int line, const char *function)
 {
     CLogInfo log;
     log.setSrc(CLogInfo::ESource::node);
     log.setStatus(CLogInfo::EStatus::info);
     log.setMsg(info);
     log.setName(getConfig().getName());
-    log.printMessage();
+    log.printMessage(file, line, function);
 }
 
-void CNode::logError(QString error)
+void CNode::logError(QString error, const char *file, int line, const char *function)
 {
     CLogInfo log;
     log.setSrc(CLogInfo::ESource::node);
     log.setStatus(CLogInfo::EStatus::error);
     log.setMsg(error);
     log.setName(getConfig().getName());
-    log.printMessage();
+    log.printMessage(file, line, function);
 }
 
-void CNode::logWarning(QString warning)
+void CNode::logWarning(QString warning, const char *file, int line, const char *function)
 {
     CLogInfo log;
     log.setSrc(CLogInfo::ESource::node);
     log.setStatus(CLogInfo::EStatus::warning);
     log.setMsg(warning);
     log.setName(getConfig().getName());
-    log.printMessage();
+    log.printMessage(file, line, function);
 }
 
 
