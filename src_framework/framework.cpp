@@ -289,6 +289,7 @@ void CFramework::onMeshFinish()
 
 void CFramework::initMesh(QString mesh)
 {
+    CLogInfo log;
     CProgressInfo progress;
     progress.setSrc(CProgressInfo::ESource::framework);
     progress.setState(CProgressInfo::EState::init);
@@ -299,7 +300,6 @@ void CFramework::initMesh(QString mesh)
         progress.setMsg(CProgressInfo::EMsg::stop);
         progress.printProgress();
 
-        CLogInfo log;
         log.setMsg(QString("The mesh '%1' could not be opened.").arg(mesh));
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
