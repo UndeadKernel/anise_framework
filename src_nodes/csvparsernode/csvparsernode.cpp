@@ -42,9 +42,8 @@ bool CCsvparserNode::start()
     // Check if the user supplied file exists before we start processing.
     QFile file(filename.toString());
     if(!file.exists()) {
-        QString error="File" + filename.toString() + " does not exist.";
-        qCritical() << error;
-        setLogError(error);
+        QString error = "File " + filename.toString() + " does not exist.";
+        logError(error);
         return false;
     }
     return createDataTable();
@@ -57,7 +56,7 @@ bool CCsvparserNode::data(QString gate_name, const CConstDataPointer &data)
          auto pmsg = data.staticCast<const CMessageData>();
          QString msg = pmsg->getMessage();
          if(msg == "start") {
-               QVariant filename = getConfig().getParameter("file")->value;               
+               QVariant filename = getConfig().getParameter("file")->value;
                QFile file(filename.toString());
                file.open(QIODevice::ReadOnly | QIODevice::Text);
                //qDebug() << "File opened successfully";

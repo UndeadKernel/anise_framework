@@ -53,7 +53,6 @@ bool CTableFileDumpNode::data(QString gate_name, const CConstDataPointer &data)
     QString info;
     QString warning;
 
-//qDebug()<<"hello"<<getConfig().getParameter("csv_output")->value.toBool();
     if(data->getType() == "table" && getConfig().getParameter("csv_output")->value.toBool()==false) {
         auto table = data.staticCast<const CTableData>();
 
@@ -74,12 +73,12 @@ bool CTableFileDumpNode::data(QString gate_name, const CConstDataPointer &data)
         auto table = data.staticCast<const CTableData>();
         QString filename = getConfig().getParameter("filename")->value.toString();
         if(dumpIntoFile(table)){
-            info=" dumped table in the csv file "+ filename;
-            setLogInfo(info);
+            info = "dumped table in the csv file " + filename;
+            logInfo(info);
         }
         else{
-            warning=" could NOT dump Table in the csv file" + filename;
-            setLogWarning(warning);
+            warning = "could NOT dump Table in the csv file" + filename;
+            logWarning(warning);
         }
     }
     return false;

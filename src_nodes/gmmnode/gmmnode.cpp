@@ -69,7 +69,7 @@ bool CGmmNode::data(QString gate_name, const CConstDataPointer &data)
            // qDebug() << "testing after training";
             return true;
         } else if (!gmm_test_table.isNull() && train==false){ // 1.Test 2.Train
-            //__Write test data to a file when training is not yet completed__            
+            //__Write test data to a file when training is not yet completed__
             QFile file(testDatafilename);
             auto test_table = data.staticCast<const CTableData>();
             qint32 rows = test_table->rowCount();
@@ -78,7 +78,7 @@ bool CGmmNode::data(QString gate_name, const CConstDataPointer &data)
                 QTextStream stream(&file);
                 for (int i=0; i<rows; i++)
                 {
-                    const QList<QVariant> &row = test_table->getRow(i);                    
+                    const QList<QVariant> &row = test_table->getRow(i);
                     for(int j=0; j<column_count; j++)
                     {
                         stream << row.at(j).toString();
@@ -151,9 +151,9 @@ void CGmmNode::testData(const QSharedPointer<const CTableData> &table)
                test_data_points.append(val.toFloat());
             }
         }
-        qDebug() << "Number of data points for classification::: "<<test_data_points.size();
-        info= "Number of data points for classification::: "+QString::number(test_data_points.size());
-        setLogInfo(info);
+        info = "Number of data points for classification::: "
+                + QString::number(test_data_points.size());
+        logInfo(info);
         numOfTestData = test_data_points.size();
         test_vector = vector(0,numOfTestData-1); /* Input test data */
         in_test_vector = vector(0,numOfTestData-1); /* Input data */
@@ -264,7 +264,7 @@ void CGmmNode::trainData(const QSharedPointer<const CTableData> &table)
            QString val = row.at(0).toString();
            data_points.append(val.toFloat());
         }
-    }    
+    }
     //-----
 
     numOfData = data_points.size();
@@ -288,9 +288,9 @@ void CGmmNode::trainData(const QSharedPointer<const CTableData> &table)
           if (in_vector[i] > datamax) datamax = in_vector[i];
     }
 
-    qDebug() << "Minima :: "<< datamin<<"   "<<"Maxima :: "<<datamax;
-    info= " Minima :: " + QString::number(datamin) + "   " + "Maxima :: " + QString::number(datamax);
-    setLogInfo(info);
+    info = "Minima :: " + QString::number(datamin) + "   "
+            + "Maxima :: " + QString::number(datamax);
+    logInfo(info);
 
        /* delta_lookup is prob of a datum (we're using histogram) with value j being in segment i.
        mu, sd, and segment_probs are the estimated mean, standard deviation, and mixture probability for each segment. */
@@ -298,13 +298,13 @@ void CGmmNode::trainData(const QSharedPointer<const CTableData> &table)
     loglik_new      = 1;
     max_iterations  = 200;
     segment_number = getConfig().getParameter("cluster_count")->value.toInt();
-    if(segment_number<1)
+    if(segment_number < 1)
     {
         commitError("out","At least one class needs to be defined");
     }
-    if(segment_number>40){
-        warning= " Allowed number of classes = 1..40.";
-        setLogWarning(warning);
+    if(segment_number > 40){
+        warning = "Allowed number of classes = 1..40.";
+        logWarning(warning);
     }
 
     classif_table->reserveRows(classif_table->rowCount()+segment_number);
