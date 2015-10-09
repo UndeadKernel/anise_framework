@@ -21,7 +21,7 @@ CFileNode::CFileNode(const CNodeConfig &config, QObject *parent/* = 0*/)
 void CFileNode::configure(CNodeConfig &config)
 {
     // Add parameters
-    config.addFilename("file", "Input File",
+    config.addFilename("input_file", "Input File",
                        "Path of the file to read from disk.");
     config.addBool("binary", "Binary format",
                    "Parse the file contents as binary data.", true);
@@ -35,7 +35,7 @@ void CFileNode::configure(CNodeConfig &config)
 
 bool CFileNode::start()
 {
-    QVariant filename = getConfig().getParameter("file")->value;
+    QVariant filename = getConfig().getParameter("input_file")->value;
 
     // Check if the user supplied file exists before we start processing.
     QFile file(filename.toString());
@@ -63,7 +63,7 @@ bool CFileNode::data(QString gate_name, const CConstDataPointer &data)
                     QSharedPointer<CFileData>(
                         static_cast<CFileData *>(createData("file")));
 
-            QVariant filename = getConfig().getParameter("file")->value;
+            QVariant filename = getConfig().getParameter("input_file")->value;
             QVariant binary = getConfig().getParameter("binary")->value;
 
             if(!file_data.isNull() &&

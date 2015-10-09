@@ -27,7 +27,7 @@ void CTableFileDumpNode::configure(CNodeConfig &config)
     config.setCategory("DataDump");
 
     // Add parameters
-    config.addFilename("filename", "Output File", "File to be written.");
+    config.addFilename("output_filename", "Output File", "File to be written.");
     config.addBool("append", "Append the table data",
                    "Append the data to the output file instead of replacing it.",
                    false);
@@ -57,7 +57,7 @@ bool CTableFileDumpNode::data(QString gate_name, const CConstDataPointer &data)
     }
 
     // User parameters
-    QString filename = getConfig().getParameter("filename")->value.toString();
+    QString filename = getConfig().getParameter("output_filename")->value.toString();
     bool append = getConfig().getParameter("append")->value.toBool();
     bool csv = getConfig().getParameter("csv")->value.toBool();
 
