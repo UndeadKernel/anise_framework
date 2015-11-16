@@ -19,8 +19,9 @@ C%ProjectName:c%Node::C%ProjectName:c%Node(const CNodeConfig &config, QObject *p
 
 void C%ProjectName:c%Node::configure(CNodeConfig &config)
 {
-    // Set a Description of this node.
+    // Set a description and category of this node.
     //config.setDescription("");
+    //config.setCategory("Algorithms");
 
     // Add parameters
     //config.addFilename("file", "Input File", "File to be read from disk.");

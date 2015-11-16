@@ -3,8 +3,10 @@
 #include "data/messagedata.h"
 #include "csvdumpdata/csvdumpdata.h"
 #include "tabledata/tabledata.h"
+#include "filedata/filedata.h"
 #include <QDebug>
 #include <QFile>
+#include <QSharedPointer>
 
 
 //------------------------------------------------------------------------------
@@ -23,12 +25,13 @@ CCsvparserNode::CCsvparserNode(const CNodeConfig &config, QObject *parent/* = 0*
 void CCsvparserNode::configure(CNodeConfig &config)
 {
     // Set a Description of this node.
-    config.setDescription("Parses CSV files into tables");
+    config.setDescription("Parse CSV files as tables.");
     // Add parameters
-    config.addFilename("file", "Input File", "CSV File to be read from disk.");
+    config.addBool("headers", "Headers Included",
+        "Are the headers included in the CSV file?", false);
     config.setCategory("Parser");
     // Add the gates.
-    //config.addInput("in", "table");
+    config.addInput("in", "file");
     config.addOutput("out", "table");
 }
 
@@ -38,73 +41,70 @@ void CCsvparserNode::configure(CNodeConfig &config)
 
 bool CCsvparserNode::start()
 {
-    QVariant filename = getConfig().getParameter("file")->value;
-    // Check if the user supplied file exists before we start processing.
-    QFile file(filename.toString());
-    if(!file.exists()) {
-        QString error = "File " + filename.toString() + " does not exist.";
-        logError(error);
-        return false;
-    }
-    return createDataTable();
+    return true;
 }
 
 bool CCsvparserNode::data(QString gate_name, const CConstDataPointer &data)
 {
     Q_UNUSED(gate_name);
-     if(data->getType() == "message") {
-         auto pmsg = data.staticCast<const CMessageData>();
-         QString msg = pmsg->getMessage();
-         if(msg == "start") {
-               QVariant filename = getConfig().getParameter("file")->value;
-               QFile file(filename.toString());
-               file.open(QIODevice::ReadOnly | QIODevice::Text);
-               //qDebug() << "File opened successfully";
-               QTextStream stream( &file );
-               QString line = stream.readAll();
-               QRegExp rx("(\\n)");//Regualr expressions for semi-colon and next line //|\\,\\;|
-               QStringList lines = line.split(rx,QString::SkipEmptyParts);
-               qint32 lineSize = lines.size();
-               parser_table->reserveRows(parser_table->rowCount()+lineSize);
 
-               // Optimize the row allocation space for the table.
-               for (int i = 0; i<lines.size(); ++i)
-               {
-                   extractFeatures(lines[i]);
-               }
-
-                commit("out", parser_table);
-                parser_table.clear();
-                //qDebug() << "data commited";
-         }
-         return true;
-     }
-     return false;
-}
-
-bool CCsvparserNode::createDataTable()
-{
-    parser_table = QSharedPointer<CTableData>(
-                static_cast<CTableData *>(createData("table")));
-
-    if(!parser_table.isNull()) {
-        parser_table->addHeader("x-axis");
-        parser_table->addHeader("y-axis");
-        return true;
-    } else {
+    if(data->getType() != "file") {
+        // We only parse file data types. Ignore all other things.
         return false;
     }
+
+    // Interpret the received data as a file and get the bytes of the file.
+    QSharedPointer<const CFileData> file = data.staticCast<const CFileData>();
+    QTextStream file_bytes(file->getBytes());
+
+    // Have we received a text file?
+    if(file->isDataBinary()) {
+        commitError("out", "Binary data instead of text data received.");
+        return true;
+    }
+
+    // Get the user parameters.
+    bool headers = getConfig().getParameter("headers")->value.toBool();
+
+    // Create a table that will contain
+    QSharedPointer<CTableData> csv_table;
+    if(!createDataTable(csv_table, file_bytes, headers)) {
+        commitError("out", "Could not create table.");
+        return true;
+    }
+
+    // Parse each line of the file.
+    while(!file_bytes.atEnd()) {
+        QString line = file_bytes.readLine();
+        QStringList entries = line.split(',');
+        QList<QVariant> &row = csv_table->newRow();
+        for(int i = 0; i < entries.length(); ++i) {
+            row.append(entries.at(i));
+        }
+    }
+
+    commit("out", csv_table);
+    return true;
 }
 
-void CCsvparserNode::extractFeatures(const QString &line)
+bool CCsvparserNode::createDataTable(
+    QSharedPointer<CTableData> &table,
+    QTextStream &file_bytes,
+    bool headers)
 {
-    QList<QVariant> &row = parser_table->newRow();
-    //row<<line;
-    QRegExp rx("(\\,|\\;)");//Regualr expressions for semi-colon and next line //|\\,\\;|
-    QStringList dataPoints = line.split(rx,QString::SkipEmptyParts);
-    //QStringList dataPoints =  line.split(",");
-    for (qint32 i = 0 ; i<dataPoints.size(); i++)
-    {
-        row<<dataPoints[i];
+    table = autoCreateData<CTableData>("table");
+
+    // Set the headers if there are any.
+    if(headers) {
+        if(!file_bytes.atEnd()) {
+            QString line = file_bytes.readLine();
+            QStringList entries = line.split(',');
+            table->addHeader(entries);
+        } else {
+            // Could not parse headers.
+            return false;
+        }
     }
+
+    return true;
 }

@@ -8,23 +8,22 @@
 
 #include <QObject>
 #include <QString>
+#include <QTextStream>
 
 class CCsvparserNode: public CNode
 {
     Q_OBJECT
 
-private:
+  private:
     // Data Structures
-    QSharedPointer<CTableData> parser_table;
-    QSharedPointer<CCsvdumpData> csv_table;
 
-public:
+  public:
     // Constructor
     explicit CCsvparserNode(const CNodeConfig &config, QObject *parent = 0);
     // Set the configuration template for this Node.
     static void configure(CNodeConfig &config);
 
-protected:
+  protected:
     // Function called when the simulation is started.
     virtual bool start();
     // Receive data sent by other nodes connected to this node.
@@ -32,11 +31,10 @@ protected:
     //Parse Data into a *.csv file
     //void parseIntoCSV(const QSharedPointer<const CTableData> &table);
 
-private:
-  bool createDataTable();
-  void extractFeatures(const QString &line);
+  private:
+    bool createDataTable(QSharedPointer<CTableData> &table,
+        QTextStream &file_bytes, bool header);
 
 };
 
 #endif // CSVPARSERNODE_H
-

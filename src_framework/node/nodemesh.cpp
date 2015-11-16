@@ -35,12 +35,11 @@ bool CNodeMesh::parseMesh(QString json_str)
     QVariant json_variant = QtJson::parse(json_str, success).toMap();
 
     if(!success) {
-        log.setMsg("Failed to parse mesh file.");
-        log.setName("Anise");
+        log.setMsg("Failed to parse the mesh file.");
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         return false;
     }
@@ -101,7 +100,7 @@ void CNodeMesh::startSimulation()
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         emit simulationFinished();
         return;
@@ -131,7 +130,7 @@ void CNodeMesh::startSimulation()
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         emit simulationFinished();
     }
@@ -180,21 +179,20 @@ bool CNodeMesh::addNode(QVariantMap &node_json)
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         return false;
     }
 
     // Verify that a Node with the same name does not exist already in the map.
     if(m_nodes.contains(node_name)) {
-
-        QString msg = "A node with the name " + node_name +
-                      " has already been added to the mesh.";
-        log.setMsg(msg);
+        log.setMsg(
+            QString("A node with the name '%1' has already been added to the mesh.")
+            .arg(node_name));
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
        return false;
     }
@@ -202,17 +200,14 @@ bool CNodeMesh::addNode(QVariantMap &node_json)
     // Verify that the requested node class is available.
     ok = CNodeFactory::instance().nodeAvailable(node_class);
     if(!ok) {
-        qCritical() << "Cannot create node" << node_name << "."
-                    << "The node class" << node_class
-                    << "does not exist.";
-        QString msg = "Cannot create node " + node_name +
-                      ". The node class " + node_class + " does not exist.";
-        log.setMsg(msg);
+        log.setMsg(
+            QString("Cannot create the node '%1'. The node class '%2' does not exist.")
+            .arg(node_class));
         log.setName("Anise");
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         return false;
     }
@@ -222,16 +217,14 @@ bool CNodeMesh::addNode(QVariantMap &node_json)
         node_class, conf);
     if(!ok) {
         // The template for the desired Node class was not found.
-        qWarning() << "The node class"
-                   << node_name << "failed to set its config template.";
-        QString msg = "The node class " + node_name +
-                      " failed to set its config template.";
-        log.setMsg(msg);
+        log.setMsg(
+            QString("The node class '%1' failed to set its config template.")
+            .arg(node_name));
         log.setName("Anise");
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         return false;
     }
@@ -254,13 +247,12 @@ bool CNodeMesh::addNode(QVariantMap &node_json)
         for(QVariant key : param.keys()) {
             ok = conf.setParameter(key.toString(), param.value(key.toString()));
             if(!ok) {
-                QString msg = "Failed to set the parameter " + key.toString()
-                    + " in Node " + node_name + " .";
-                log.setMsg(msg);
+                log.setMsg(QString("Failed to set the parameter '%1' in Node '%2'.")
+                    .arg(key.toString(), node_name));
                 log.setSrc(CLogInfo::ESource::framework);
                 log.setStatus(CLogInfo::EStatus::error);
                 log.setTime(QDateTime::currentDateTime());
-                log.printMessage();
+                log.print();
 
                 return false;
             }
@@ -270,13 +262,11 @@ bool CNodeMesh::addNode(QVariantMap &node_json)
     // Create the node we've been asked for.
     CNode *node = CNodeFactory::instance().createNode(node_class, conf);
     if(node == nullptr) {
-        qWarning() << "Could not create Node" << node_class << ".";
         log.setMsg("Could not create Node " + node_class + " .");
-        log.setName("Anise");
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::warning);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         return false;
     }
@@ -326,7 +316,7 @@ bool CNodeMesh::addConnection(QVariantMap& connections_json)
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         return false;
     }
@@ -346,7 +336,7 @@ bool CNodeMesh::addConnection(QVariantMap& connections_json)
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
     }
     if(dest_node.isNull()) {
@@ -358,7 +348,7 @@ bool CNodeMesh::addConnection(QVariantMap& connections_json)
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
     }
     if(src_node.isNull() || dest_node.isNull()) {
@@ -371,7 +361,7 @@ bool CNodeMesh::addConnection(QVariantMap& connections_json)
         log.setSrc(CLogInfo::ESource::framework);
         log.setStatus(CLogInfo::EStatus::error);
         log.setTime(QDateTime::currentDateTime());
-        log.printMessage();
+        log.print();
 
         return false;
     }

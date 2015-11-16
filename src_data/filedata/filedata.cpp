@@ -54,7 +54,7 @@ bool CFileData::readFile(QString filename, bool binary)
     return true;
 }
 
-bool CFileData::isDataBinary()
+bool CFileData::isDataBinary() const
 {
     return m_binary_data;
 }

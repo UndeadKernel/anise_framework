@@ -9,9 +9,9 @@
 
 class CPlotNode: public CNode
 {
-    Q_OBJECT
+  Q_OBJECT
 
-private:
+  private:
     // Data Structures
     static QProcess *anise_process;
     QString datamin;
@@ -21,13 +21,13 @@ private:
     QStringList plot_lines,plot_gmm;
     QString normals,gmm;
 
-public:
+  public:
     // Constructor
     explicit CPlotNode(const CNodeConfig &config, QObject *parent = 0);
     // Set the configuration template for this Node.
     static void configure(CNodeConfig &config);
 
-protected:
+  protected:
     // Function called when the simulation is started.
     virtual bool start();
     // Receive data sent by other nodes connected to this node.

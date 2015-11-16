@@ -10,7 +10,7 @@ class CFileData: public CData
     explicit CFileData();
     virtual CDataPointer clone() const;
     bool readFile(QString filename, bool binary);
-    bool isDataBinary();
+    bool isDataBinary() const;
     const QByteArray &getBytes() const;
     int numBytes() const;
     void setByte(int offset, quint8 byte);

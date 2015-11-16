@@ -61,7 +61,9 @@ qint32 CTableData::headerSize() const
 QList<QVariant> &CTableData::newRow()
 {
     m_table.append(QList<QVariant>());
-    m_table.last().reserve(headerSize());
+    if(headerSize() > 0) {
+        m_table.last().reserve(headerSize());
+    }
 
     return m_table.last();
 }
